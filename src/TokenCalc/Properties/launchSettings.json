@@ -18,8 +18,8 @@
     },
     "TokenCalc": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "http://localhost:5000/api/values",
+      "launchBrowser": false,
+      "launchUrl": "http://localhost:3000/api/calculator",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

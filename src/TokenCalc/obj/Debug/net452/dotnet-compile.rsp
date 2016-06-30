@@ -99,16 +99,16 @@
 --reference:C:\Users\nick\.nuget\packages\System.ComponentModel.TypeConverter\4.0.1-rc2-24027\ref\net45\System.ComponentModel.TypeConverter.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Diagnostics.Contracts.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Diagnostics.Debug.dll
---reference:C:\Users\nick\.nuget\packages\System.Diagnostics.DiagnosticSource\4.0.0-rc2-24027\lib\portable-net45+win8+wpa81\System.Diagnostics.DiagnosticSource.dll
+--reference:C:\Users\nick\.nuget\packages\System.Diagnostics.DiagnosticSource\4.0.0-rc2-24027\lib\netstandard1.1\System.Diagnostics.DiagnosticSource.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Globalization.dll
 --reference:C:\Users\nick\.nuget\packages\System.IdentityModel.Tokens.Jwt\5.0.0-rc2-305061149\lib\net451\System.IdentityModel.Tokens.Jwt.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.IO.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Linq.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Linq.Expressions.dll
---reference:C:\Users\nick\.nuget\packages\System.Numerics.Vectors\4.1.1-rc2-24027\ref\portable-net45+win8\System.Numerics.Vectors.dll
+--reference:C:\Users\nick\.nuget\packages\System.Numerics.Vectors\4.1.1-rc2-24027\ref\netstandard1.1\System.Numerics.Vectors.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.Extensions.dll
---reference:C:\Users\nick\.nuget\packages\System.Reflection.Metadata\1.2.0\lib\portable-net45+win8\System.Reflection.Metadata.dll
+--reference:C:\Users\nick\.nuget\packages\System.Reflection.Metadata\1.2.0\lib\netstandard1.1\System.Reflection.Metadata.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Resources.ResourceManager.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.Extensions.dll
@@ -119,7 +119,7 @@
 --reference:C:\Users\nick\.nuget\packages\System.Text.Encodings.Web\4.0.0-rc2-24027\lib\netstandard1.0\System.Text.Encodings.Web.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Threading.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Threading.Tasks.dll
---reference:C:\Users\nick\.nuget\packages\System.Threading.Tasks.Extensions\4.0.0-rc2-24027\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll
+--reference:C:\Users\nick\.nuget\packages\System.Threading.Tasks.Extensions\4.0.0-rc2-24027\lib\netstandard1.0\System.Threading.Tasks.Extensions.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Core.dll
@@ -128,8 +128,6 @@
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xml.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xml.Linq.dll
 --reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.ComponentModel.DataAnnotations.dll
---reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Diagnostics.Tracing.dll
---reference:C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.Primitives.dll
 --resource:"C:\Projects\TokenCalc\src\TokenCalc\obj\Debug\net452\TokenCalcdotnet-compile.deps.json",TokenCalc.deps.json
 C:\Projects\TokenCalc\src\TokenCalc\Program.cs
 C:\Projects\TokenCalc\src\TokenCalc\Startup.cs

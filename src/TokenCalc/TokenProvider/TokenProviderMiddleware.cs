@@ -45,6 +45,7 @@ namespace TokenCalc
 
         private async Task GenerateToken(HttpContext context)
         {
+
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
@@ -62,9 +63,9 @@ namespace TokenCalc
             // You can add other claims here, if you want:
             var claims = new Claim[]
             {
-        new Claim(JwtRegisteredClaimNames.Sub, username),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64)
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64)
             };
 
             // Create the JWT and write it to a string
@@ -75,23 +76,31 @@ namespace TokenCalc
                 notBefore: now,
                 expires: now.Add(_options.Expiration),
                 signingCredentials: _options.SigningCredentials);
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            var handler = new JwtSecurityTokenHandler();
+
+
+            //handler.TokenLifetimeInMinutes = 1;
+
+
+            var encodedJwt = handler.WriteToken(jwt);
 
             var response = new
             {
                 access_token = encodedJwt,
-                expires_in = (int)_options.Expiration.TotalSeconds
+                expires_in = (int)_options.Expiration.TotalSeconds,
+                valid_to = jwt.ValidTo
             };
 
             // Serialize and return the response
             context.Response.ContentType = "application/json";
+            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 
         private Task<ClaimsIdentity> GetIdentity(string username, string password)
         {
             // DON'T do this in production, obviously!
-            if (username == "TEST" && password == "TEST123")
+            if ((username == "TEST" && password == "TEST123")||(username == "admin" && password == "1234"))
             {
                 return Task.FromResult(new ClaimsIdentity(new System.Security.Principal.GenericIdentity(username, "Token"), new Claim[] { }));
             }

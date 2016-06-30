@@ -861,8 +861,8 @@
       },
       "System.ComponentModel.Primitives/4.0.1-rc2-24027": {
         "dependencies": {
-          "System": "4.0.0.0",
-          "mscorlib": "4.0.0.0"
+          "mscorlib": "4.0.0.0",
+          "System": "4.0.0.0"
         },
         "compile": {
           "ref/net45/System.ComponentModel.Primitives.dll": {}
@@ -871,8 +871,8 @@
       "System.ComponentModel.TypeConverter/4.0.1-rc2-24027": {
         "dependencies": {
           "System.ComponentModel.Primitives": "4.0.1-rc2-24027",
-          "System": "4.0.0.0",
-          "mscorlib": "4.0.0.0"
+          "mscorlib": "4.0.0.0",
+          "System": "4.0.0.0"
         },
         "compile": {
           "ref/net45/System.ComponentModel.TypeConverter.dll": {}
@@ -890,7 +890,7 @@
       },
       "System.Diagnostics.DiagnosticSource/4.0.0-rc2-24027": {
         "compile": {
-          "lib/portable-net45+win8+wpa81/System.Diagnostics.DiagnosticSource.dll": {}
+          "lib/netstandard1.1/System.Diagnostics.DiagnosticSource.dll": {}
         }
       },
       "System.Globalization/4.0.0.0": {
@@ -923,7 +923,7 @@
       },
       "System.Numerics.Vectors/4.1.1-rc2-24027": {
         "compile": {
-          "ref/portable-net45+win8/System.Numerics.Vectors.dll": {}
+          "ref/netstandard1.1/System.Numerics.Vectors.dll": {}
         }
       },
       "System.Reflection/4.0.0.0": {
@@ -941,7 +941,7 @@
           "System.Collections.Immutable": "1.1.37"
         },
         "compile": {
-          "lib/portable-net45+win8/System.Reflection.Metadata.dll": {}
+          "lib/netstandard1.1/System.Reflection.Metadata.dll": {}
         }
       },
       "System.Resources.ResourceManager/4.0.0.0": {
@@ -996,7 +996,7 @@
       },
       "System.Threading.Tasks.Extensions/4.0.0-rc2-24027": {
         "compile": {
-          "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.dll": {}
+          "lib/netstandard1.0/System.Threading.Tasks.Extensions.dll": {}
         }
       },
       "mscorlib/4.0.0.0": {
@@ -1037,16 +1037,6 @@
       "System.ComponentModel.DataAnnotations/4.0.0.0": {
         "compile": {
           ".NETFramework/v4.5.2/System.ComponentModel.DataAnnotations.dll": {}
-        }
-      },
-      "System.Diagnostics.Tracing/4.0.10.0": {
-        "compile": {
-          ".NETFramework/v4.5.2/Facades/System.Diagnostics.Tracing.dll": {}
-        }
-      },
-      "System.Reflection.Primitives/4.0.0.0": {
-        "compile": {
-          ".NETFramework/v4.5.2/Facades/System.Reflection.Primitives.dll": {}
         }
       }
     },
@@ -1881,8 +1871,8 @@
       "System.ComponentModel/4.0.0.0": {},
       "System.ComponentModel.Primitives/4.0.1-rc2-24027": {
         "dependencies": {
-          "System": "4.0.0.0",
-          "mscorlib": "4.0.0.0"
+          "mscorlib": "4.0.0.0",
+          "System": "4.0.0.0"
         },
         "runtime": {
           "lib/net45/System.ComponentModel.Primitives.dll": {}
@@ -1891,8 +1881,8 @@
       "System.ComponentModel.TypeConverter/4.0.1-rc2-24027": {
         "dependencies": {
           "System.ComponentModel.Primitives": "4.0.1-rc2-24027",
-          "System": "4.0.0.0",
-          "mscorlib": "4.0.0.0"
+          "mscorlib": "4.0.0.0",
+          "System": "4.0.0.0"
         },
         "runtime": {
           "lib/net45/System.ComponentModel.TypeConverter.dll": {}
@@ -1902,7 +1892,7 @@
       "System.Diagnostics.Debug/4.0.0.0": {},
       "System.Diagnostics.DiagnosticSource/4.0.0-rc2-24027": {
         "runtime": {
-          "lib/portable-net45+win8+wpa81/System.Diagnostics.DiagnosticSource.dll": {}
+          "lib/netstandard1.1/System.Diagnostics.DiagnosticSource.dll": {}
         }
       },
       "System.Globalization/4.0.0.0": {},
@@ -1929,7 +1919,7 @@
           "System.Collections.Immutable": "1.1.37"
         },
         "runtime": {
-          "lib/portable-net45+win8/System.Reflection.Metadata.dll": {}
+          "lib/netstandard1.1/System.Reflection.Metadata.dll": {}
         }
       },
       "System.Resources.ResourceManager/4.0.0.0": {},
@@ -1948,7 +1938,7 @@
       "System.Threading.Tasks/4.0.0.0": {},
       "System.Threading.Tasks.Extensions/4.0.0-rc2-24027": {
         "runtime": {
-          "lib/portable-net45+win8+wp8+wpa81/System.Threading.Tasks.Extensions.dll": {}
+          "lib/netstandard1.0/System.Threading.Tasks.Extensions.dll": {}
         }
       },
       "mscorlib/4.0.0.0": {},
@@ -1958,9 +1948,7 @@
       "System.Security/4.0.0.0": {},
       "System.Xml/4.0.0.0": {},
       "System.Xml.Linq/4.0.0.0": {},
-      "System.ComponentModel.DataAnnotations/4.0.0.0": {},
-      "System.Diagnostics.Tracing/4.0.10.0": {},
-      "System.Reflection.Primitives/4.0.0.0": {}
+      "System.ComponentModel.DataAnnotations/4.0.0.0": {}
     }
   },
   "libraries": {
@@ -2545,16 +2533,6 @@
       "sha512": ""
     },
     "System.ComponentModel.DataAnnotations/4.0.0.0": {
-      "type": "referenceassembly",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "System.Diagnostics.Tracing/4.0.10.0": {
-      "type": "referenceassembly",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "System.Reflection.Primitives/4.0.0.0": {
       "type": "referenceassembly",
       "serviceable": false,
       "sha512": ""

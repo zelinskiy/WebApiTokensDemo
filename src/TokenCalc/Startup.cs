@@ -12,12 +12,15 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace TokenCalc
 {
     public class Startup
     {
-        
+
+        //Our secred key which MUST be stored separately
+        private static readonly string secretKey = "veryverysecretkey";
 
         public Startup(IHostingEnvironment env)
         {
@@ -30,14 +33,20 @@ namespace TokenCalc
         }
 
         public IConfigurationRoot Configuration { get; }
- // This method gets called by the runtime. Use this method to add services to the container.
+    // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-        }
 
-        //Our secred key which MUST be stored separately
-        private static readonly string secretKey = "veryverysecretkey";
+            var policy = new CorsPolicy();
+            policy.Headers.Add("*");
+            policy.Methods.Add("*");
+            policy.Origins.Add("*");
+            policy.SupportsCredentials = true;
+
+            services.AddCors(options => options.AddPolicy("MyPolicy", policy));
+
+            services.AddMvc();
+        }        
 
 
 
@@ -48,6 +57,7 @@ namespace TokenCalc
             loggerFactory.AddDebug();
             var logger = loggerFactory.CreateLogger("Tokens");
 
+            
 
             app.UseStaticFiles();
 
@@ -67,14 +77,17 @@ namespace TokenCalc
             var tokenparams = new TokenValidationParameters();
             tokenparams.IssuerSigningKey = signingKey;
             tokenparams.ValidIssuer = "ExampleIssuer";
-
+            tokenparams.ValidateLifetime = true;
+            tokenparams.SaveSigninToken = false;
+            tokenparams.RequireExpirationTime = true;
+            
 
             var opts = new JwtBearerOptions()
             {
                 TokenValidationParameters = tokenparams,
                 //token will be stored even after restart actually
-                SaveToken = true,
-                AutomaticAuthenticate = true,
+                //SaveToken = false,
+                //AutomaticAuthenticate = true,
                 Audience = "ExampleAudience",
                 Events = new JwtBearerEvents
                 {
@@ -84,7 +97,7 @@ namespace TokenCalc
                         return Task.FromResult(0);
                     },
                     OnTokenValidated = context =>
-                    {
+                    {                        
                         //not identified kind of magic goes here
                         var claimsIdentity = context.Ticket.Principal.Identity as ClaimsIdentity;
                         claimsIdentity.AddClaim(new Claim("id_token",
@@ -100,7 +113,8 @@ namespace TokenCalc
             //Adding a jwt service so we can use it like 
             //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
             app.UseJwtBearerAuthentication(opts);
-            
+
+            app.UseCors("MyPolicy");
 
             app.UseMvc();
             
