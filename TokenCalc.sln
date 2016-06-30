@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{048B92B1-E1B2-4AAB-9FF8-1B870EF7A0C2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E681CAA6-EB3D-46B3-A841-46B972F6E79D}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TokenCalc", "src\TokenCalc\TokenCalc.xproj", "{D7DE34FE-02E0-4540-8D71-124962AC27E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7DE34FE-02E0-4540-8D71-124962AC27E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7DE34FE-02E0-4540-8D71-124962AC27E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7DE34FE-02E0-4540-8D71-124962AC27E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7DE34FE-02E0-4540-8D71-124962AC27E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D7DE34FE-02E0-4540-8D71-124962AC27E6} = {048B92B1-E1B2-4AAB-9FF8-1B870EF7A0C2}
+	EndGlobalSection
+EndGlobal
