@@ -12,6 +12,7 @@ namespace TokenCalc
     {
         private readonly RequestDelegate _next;
         private readonly TokenProviderOptions _options;
+        private readonly JwtSecurityTokenHandler handler;
 
         public TokenProviderMiddleware(
             RequestDelegate next,
@@ -19,7 +20,13 @@ namespace TokenCalc
         {
             _next = next;
             _options = options.Value;
+            handler = new JwtSecurityTokenHandler()
+            {
+                TokenLifetimeInMinutes = 1 + options.Value.Expiration.Minutes,
+            };
         }
+        
+
 
         public Task Invoke(HttpContext context)
         {
@@ -76,11 +83,7 @@ namespace TokenCalc
                 notBefore: now,
                 expires: now.Add(_options.Expiration),
                 signingCredentials: _options.SigningCredentials);
-            var handler = new JwtSecurityTokenHandler();
-
-
-            //handler.TokenLifetimeInMinutes = 1;
-
+                        
 
             var encodedJwt = handler.WriteToken(jwt);
 

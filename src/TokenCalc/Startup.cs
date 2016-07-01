@@ -80,15 +80,15 @@ namespace TokenCalc
             tokenparams.ValidateLifetime = true;
             tokenparams.SaveSigninToken = false;
             tokenparams.RequireExpirationTime = true;
-            
+
 
             var opts = new JwtBearerOptions()
             {
                 TokenValidationParameters = tokenparams,
-                //token will be stored even after restart actually
-                //SaveToken = false,
-                //AutomaticAuthenticate = true,
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
                 Audience = "ExampleAudience",
+                
                 Events = new JwtBearerEvents
                 {
                     OnAuthenticationFailed = context =>
@@ -97,7 +97,12 @@ namespace TokenCalc
                         return Task.FromResult(0);
                     },
                     OnTokenValidated = context =>
-                    {                        
+                    {
+
+                        if(context.SecurityToken.ValidTo < DateTime.UtcNow)
+                        {
+                            return Task.FromResult(0);                            
+                        }
                         //not identified kind of magic goes here
                         var claimsIdentity = context.Ticket.Principal.Identity as ClaimsIdentity;
                         claimsIdentity.AddClaim(new Claim("id_token",

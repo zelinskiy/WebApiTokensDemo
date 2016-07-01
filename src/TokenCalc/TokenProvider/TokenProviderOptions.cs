@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace TokenCalc
 {
     public class TokenProviderOptions
@@ -17,6 +18,7 @@ namespace TokenCalc
         public TimeSpan Expiration { get; set; } = TimeSpan.FromSeconds(10);
 
         public SigningCredentials SigningCredentials { get; set; }
+        
     }
 
    
