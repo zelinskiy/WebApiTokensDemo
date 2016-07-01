@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using TokenCalc.Data;
+using Microsoft.EntityFrameworkCore;
+using TokenCalc.Models;
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace TokenCalc
 {
@@ -20,6 +25,7 @@ namespace TokenCalc
         {
             _next = next;
             _options = options.Value;
+
             handler = new JwtSecurityTokenHandler()
             {
                 TokenLifetimeInMinutes = 1 + options.Value.Expiration.Minutes,
@@ -56,24 +62,44 @@ namespace TokenCalc
             var username = context.Request.Form["username"];
             var password = context.Request.Form["password"];
 
-            var identity = await GetIdentity(username, password);
+            //TODO:proper dependency injection
+            var signInManager = (SignInManager<ApplicationUser>)context.RequestServices.GetService(typeof(SignInManager<ApplicationUser>));
+            var userManager = (UserManager<ApplicationUser>)context.RequestServices.GetService(typeof(UserManager<ApplicationUser>));
+            
+
+            var identity = await GetIdentity(username, password, signInManager);
+            var myclaims = new List<Claim>();
             if (identity == null)
             {
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync("Invalid username or password.");
                 return;
             }
+            else
+            {
+                var user = await userManager.FindByNameAsync(username);
+                if(user != null)
+                {
+                    foreach (var c in user.Claims)
+                    {
+                        myclaims.Add(new Claim(c.ClaimType, c.ClaimValue));
+                    }
+                }
+                
+            }
 
             var now = DateTime.UtcNow;
-
+            
             // Specifically add the jti (random nonce), iat (issued timestamp), and sub (subject/user) claims.
             // You can add other claims here, if you want:
-            var claims = new Claim[]
+            var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64)
+                new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(now).ToString(), ClaimValueTypes.Integer64),
+                new Claim("myClaimType", "myClaimValue")
             };
+            claims.AddRange(myclaims);
 
             // Create the JWT and write it to a string
             var jwt = new JwtSecurityToken(
@@ -82,8 +108,7 @@ namespace TokenCalc
                 claims: claims,
                 notBefore: now,
                 expires: now.Add(_options.Expiration),
-                signingCredentials: _options.SigningCredentials);
-                        
+                signingCredentials: _options.SigningCredentials);                        
 
             var encodedJwt = handler.WriteToken(jwt);
 
@@ -100,16 +125,19 @@ namespace TokenCalc
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 
-        private Task<ClaimsIdentity> GetIdentity(string username, string password)
+        private async Task<ClaimsIdentity> GetIdentity(string username, string password, SignInManager<ApplicationUser> signInManager)
         {
+            var result = await signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: false);
+            
+
             // DON'T do this in production, obviously!
-            if ((username == "TEST" && password == "TEST123")||(username == "admin" && password == "1234"))
+            if ((username == "TEST" && password == "TEST123") || result.Succeeded)
             {
-                return Task.FromResult(new ClaimsIdentity(new System.Security.Principal.GenericIdentity(username, "Token"), new Claim[] { }));
+                return await Task.FromResult(new ClaimsIdentity(new System.Security.Principal.GenericIdentity(username, "Token"), new Claim[] { }));
             }
 
             // Credentials are invalid, or account doesn't exist
-            return Task.FromResult<ClaimsIdentity>(null);
+            return await Task.FromResult<ClaimsIdentity>(null);
         }
 
         public static long ToUnixEpochDate(DateTime date)

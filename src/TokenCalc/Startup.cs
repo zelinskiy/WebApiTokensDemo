@@ -13,6 +13,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using TokenCalc.Data;
+using Microsoft.EntityFrameworkCore;
+using TokenCalc.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace TokenCalc
 {
@@ -22,6 +26,9 @@ namespace TokenCalc
         //Our secred key which MUST be stored separately
         private static readonly string secretKey = "veryverysecretkey";
 
+        private static DbContextOptions<ApplicationDbContext> applicationDbContextOptions;
+        
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -29,13 +36,31 @@ namespace TokenCalc
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+            if (env.IsDevelopment())
+            {
+                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
+                builder.AddUserSecrets();
+            }
+
             Configuration = builder.Build();
         }
 
         public IConfigurationRoot Configuration { get; }
-    // This method gets called by the runtime. Use this method to add services to the container.
+
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                applicationDbContextOptions = (DbContextOptions<ApplicationDbContext>)options.Options;
+            });
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddRoleManager<ApplicationRoleManager>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             var policy = new CorsPolicy();
             policy.Headers.Add("*");
@@ -57,9 +82,9 @@ namespace TokenCalc
             loggerFactory.AddDebug();
             var logger = loggerFactory.CreateLogger("Tokens");
 
-            
-
             app.UseStaticFiles();
+
+            app.UseIdentity();
 
             //Setting up our "token dispenser"
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
@@ -68,8 +93,10 @@ namespace TokenCalc
                 Audience = "ExampleAudience",
                 Issuer = "ExampleIssuer",
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
+                ApplicationDbContextOptions = applicationDbContextOptions,
             };
 
+            
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
 
 
