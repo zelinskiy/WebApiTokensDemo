@@ -1,8 +1,0 @@
-C:\Projects\TokenCalc\TokenCalcTester\bin\Debug\TokenCalcTester.exe.config
-C:\Projects\TokenCalc\TokenCalcTester\bin\Debug\TokenCalcTester.exe
-C:\Projects\TokenCalc\TokenCalcTester\bin\Debug\TokenCalcTester.pdb
-C:\Projects\TokenCalc\TokenCalcTester\obj\Debug\TokenCalcTester.csprojResolveAssemblyReference.cache
-C:\Projects\TokenCalc\TokenCalcTester\obj\Debug\TokenCalcTester.exe
-C:\Projects\TokenCalc\TokenCalcTester\obj\Debug\TokenCalcTester.pdb
-C:\Projects\TokenCalc\TokenCalcTester\bin\Debug\Newtonsoft.Json.dll
-C:\Projects\TokenCalc\TokenCalcTester\bin\Debug\Newtonsoft.Json.xml
