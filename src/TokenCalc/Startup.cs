@@ -107,6 +107,15 @@ namespace TokenCalc
             tokenparams.ValidateLifetime = true;
             tokenparams.SaveSigninToken = false;
             tokenparams.RequireExpirationTime = true;
+            tokenparams.ClockSkew = TimeSpan.Zero;
+            tokenparams.LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
+            {
+                if (expires.Value < DateTime.UtcNow)
+                {
+                    return false;
+                }
+                return true;
+            };
 
 
             var opts = new JwtBearerOptions()

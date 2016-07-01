@@ -16,7 +16,7 @@ namespace TokenCalc
 
         public string Audience { get; set; }
 
-        public TimeSpan Expiration { get; set; } = TimeSpan.FromSeconds(10);
+        public TimeSpan Expiration { get; set; } = TimeSpan.FromSeconds(60);
 
         public SigningCredentials SigningCredentials { get; set; }
 
