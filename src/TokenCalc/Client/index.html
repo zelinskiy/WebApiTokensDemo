@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!--NOTE: Use simple http server e.g. "C:\Python27\python.exe -im SimpleHTTPServer 8888" for cookies-->
+    <meta charset="utf-8" />
+    <title>Test</title>
+
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js" integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+
+    <script>
+
+    var hosting = "http://localhost:5000";
+
+
+    function getSum() {
+        var A = $("#A").val();
+        var B = $("#B").val();
+        $.get({
+            url: hosting+"/api/calculator/add/" + A + "/" + B,
+            success: function (data) {
+                console.log(data);
+                $("#result").html(data);
+            }
+        });
+    }
+
+    function getProduct() {
+        var A = $("#A").val();
+        var B = $("#B").val();
+        console.log($.cookie("token"));
+        console.log("cookis enabled: " + navigator.cookieEnabled);
+        $.get({
+            url: hosting + "/api/calculator/mult/" + A + "/" + B,
+            headers: {
+                'Authorization': 'Bearer ' + $.cookie("token"),
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            contentType:"application/x-www-form-urlencoded",
+            success: function (data) {
+                console.log(data);
+                $("#result").html(data);
+            },
+            error:function(){
+                $("#result").html("Только достойные могут узнать");
+            }
+        });
+    }
+
+
+    function logIn() {
+        var login = $("#login").val();
+        var pass = $("#pass").val();
+        $.post({
+            url: hosting + "/token",
+            contentType: "application/x-www-form-urlencoded",
+            data:{
+                username:login,
+                password:pass
+            },
+            success: function (data) {
+                console.log(data.access_token);
+                $.cookie("token", data.access_token, { expires: 100 });
+                $("#loginButton").css("background-color", "green");
+            },
+            error: function () {
+                $("#loginButton").css("background-color", "red");
+            }
+        });
+    }
+    </script>
+
+
+
+</head>
+
+<body>
+    <center>
+
+        <br />
+        <h2>О великий оракул скажи нам сколько будет</h2>
+        <hr />
+        <p>
+            <input type="number" id="A" value="0" /> и
+            <input type="number" id="B" value="0" /> ?
+        </p>
+
+        <h1><span id="result"></span></h1>
+
+        <button onclick="getSum()">SUM</button>
+        <button onclick="getProduct()">PRODUCT</button>
+        <br /><hr /><br />
+        <p>
+            <input type="text" id="login" value="TEST" placeholder="login" />
+            <input type="text" id="pass" value="TEST123" placeholder="password" />
+            <button id="loginButton" onclick="logIn()">LOGIN</button>
+        </p>
+
+
+    </center>
+
+
+</body>
+</html>
