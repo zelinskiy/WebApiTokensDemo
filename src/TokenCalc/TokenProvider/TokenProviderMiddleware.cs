@@ -28,6 +28,7 @@ namespace TokenCalc
 
         public Task Invoke(HttpContext context)
         {
+            
             if (!context.Request.Path.Equals(_options.Path, StringComparison.Ordinal))
             {
                 return _next(context);
@@ -41,6 +42,7 @@ namespace TokenCalc
                 return context.Response.WriteAsync("Bad request *777*");
             }
 
+            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             return GenerateToken(context);
         }
 
@@ -116,7 +118,6 @@ namespace TokenCalc
 
             // Serialize and return the response
             context.Response.ContentType = "application/json";
-            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 

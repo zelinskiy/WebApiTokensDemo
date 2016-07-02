@@ -1,31 +1,31 @@
 1) Какое у нас апи:
 
 **Middleware**
-POST /token
+POST /api/token
 примет логин и пароль и вернет токен
 (если логин и пароль есть в базе)
 
 **Калькулятор**
-GET /calculator/add/4/8
+GET /api/calculator/add/4/8
 открытый контроллер, используют все желающие
 вернет сумму
 
-GET /calculator/mult/3/5
+GET /api/calculator/mult/3/5
 закрытый контроллер, работает только если передан верный токен
 возвращает произведение
 
 **Аккаунт менеджер**
 
-[open] GET /account/register/user@mail.ru/Qwerty1]
+[open] GET /api/account/register/user@mail.ru/Qwerty1]
 регистрирует пользователей и показывает ошибки регистрации
 
-[closed] GET /account/authenticated
+[closed] GET /api/account/authenticated
 залогинен ли юзер?
 
-[open] GET /account/allusers/
+[open] GET /api/account/allusers/
 список пользователей
 
-[closed] GET /account/claims/
+[closed] GET /api/account/claims/
 список утверждений текущего пользователя
 
 

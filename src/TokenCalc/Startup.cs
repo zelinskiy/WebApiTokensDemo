@@ -26,6 +26,7 @@ namespace TokenCalc
 
         private static readonly string myIssuer = "ExampleIssuer";
         private static readonly string myAudience = "ExampleAudience";
+        private static readonly TimeSpan expirationTime = TimeSpan.FromSeconds(60);
 
 
 
@@ -89,6 +90,8 @@ namespace TokenCalc
                 Audience = myAudience,
                 Issuer = myIssuer,
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
+                Expiration = expirationTime,
+                Path = "/api/token"
             };
             
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
