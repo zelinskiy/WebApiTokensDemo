@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using TokenCalc.Data;
-using Microsoft.EntityFrameworkCore;
 using TokenCalc.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
@@ -17,7 +15,6 @@ namespace TokenCalc
     {
         private readonly RequestDelegate _next;
         private readonly TokenProviderOptions _options;
-        private readonly JwtSecurityTokenHandler handler;
 
         public TokenProviderMiddleware(
             RequestDelegate next,
@@ -25,11 +22,6 @@ namespace TokenCalc
         {
             _next = next;
             _options = options.Value;
-
-            handler = new JwtSecurityTokenHandler()
-            {
-                TokenLifetimeInMinutes = 1 + options.Value.Expiration.Minutes,
-            };
         }
         
 
@@ -54,8 +46,11 @@ namespace TokenCalc
 
 
 
-
-
+        /// <summary>
+        /// Generates new token from username=user&password=pass in request body
+        /// </summary>
+        /// <param name="context">Http request context</param>
+        /// <returns>JSON with token and its expiration</returns>
         private async Task GenerateToken(HttpContext context)
         {
 
@@ -66,7 +61,6 @@ namespace TokenCalc
             var signInManager = (SignInManager<ApplicationUser>)context.RequestServices.GetService(typeof(SignInManager<ApplicationUser>));
             var userManager = (UserManager<ApplicationUser>)context.RequestServices.GetService(typeof(UserManager<ApplicationUser>));
             
-
             var identity = await GetIdentity(username, password, signInManager);
             var myclaims = new List<Claim>();
             if (identity == null)
@@ -78,6 +72,7 @@ namespace TokenCalc
             else
             {
                 var user = await userManager.FindByNameAsync(username);
+                //Try to add claims from database
                 if(user != null)
                 {
                     foreach (var c in user.Claims)
@@ -110,7 +105,7 @@ namespace TokenCalc
                 expires: now.Add(_options.Expiration),
                 signingCredentials: _options.SigningCredentials);                        
 
-            var encodedJwt = handler.WriteToken(jwt);
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
             {
@@ -125,6 +120,14 @@ namespace TokenCalc
             await context.Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
         }
 
+
+        /// <summary>
+        /// Getting identity from database by email and password
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="signInManager"></param>
+        /// <returns>speified ClaimSidentity OR empty Identity</returns>
         private async Task<ClaimsIdentity> GetIdentity(string username, string password, SignInManager<ApplicationUser> signInManager)
         {
             var result = await signInManager.PasswordSignInAsync(username, password, false, lockoutOnFailure: false);
@@ -139,6 +142,7 @@ namespace TokenCalc
             // Credentials are invalid, or account doesn't exist
             return await Task.FromResult<ClaimsIdentity>(null);
         }
+        
 
         public static long ToUnixEpochDate(DateTime date)
             => (long)Math.Round((date.ToUniversalTime() - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).TotalSeconds);

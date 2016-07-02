@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,8 +24,10 @@ namespace TokenCalc
         //Our secred key which MUST be stored separately
         private static readonly string secretKey = "veryverysecretkey";
 
-        private static DbContextOptions<ApplicationDbContext> applicationDbContextOptions;
-        
+        private static readonly string myIssuer = "ExampleIssuer";
+        private static readonly string myAudience = "ExampleAudience";
+
+
 
         public Startup(IHostingEnvironment env)
         {
@@ -38,8 +38,7 @@ namespace TokenCalc
                 .AddEnvironmentVariables();
 
             if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
+            { 
                 builder.AddUserSecrets();
             }
 
@@ -52,10 +51,7 @@ namespace TokenCalc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                applicationDbContextOptions = (DbContextOptions<ApplicationDbContext>)options.Options;
-            });
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddRoleManager<ApplicationRoleManager>()
@@ -83,39 +79,35 @@ namespace TokenCalc
             var logger = loggerFactory.CreateLogger("Tokens");
 
             app.UseStaticFiles();
-
             app.UseIdentity();
 
+            
             //Setting up our "token dispenser"
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
             var options = new TokenProviderOptions
             {
-                Audience = "ExampleAudience",
-                Issuer = "ExampleIssuer",
+                Audience = myAudience,
+                Issuer = myIssuer,
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-                ApplicationDbContextOptions = applicationDbContextOptions,
             };
-
             
             app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
 
-
             //Setting our tokens validator
-            var tokenparams = new TokenValidationParameters();
-            tokenparams.IssuerSigningKey = signingKey;
-            tokenparams.ValidIssuer = "ExampleIssuer";
-            tokenparams.ValidateLifetime = true;
-            tokenparams.SaveSigninToken = false;
-            tokenparams.RequireExpirationTime = true;
-            tokenparams.ClockSkew = TimeSpan.Zero;
-            tokenparams.LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
+            var tokenparams = new TokenValidationParameters()
             {
-                if (expires.Value < DateTime.UtcNow)
-                {
-                    return false;
-                }
-                return true;
-            };
+                IssuerSigningKey = signingKey,
+                ValidIssuer = myIssuer,
+                ValidateLifetime = true,
+                SaveSigninToken = false,
+                RequireExpirationTime = true,
+                ClockSkew = TimeSpan.Zero,
+                LifetimeValidator = ((DateTime? notBefore,
+                    DateTime? expires,
+                    SecurityToken securityToken,
+                    TokenValidationParameters validationParameters) =>
+                !(expires.Value < DateTime.UtcNow)),                
+            };        
 
 
             var opts = new JwtBearerOptions()
@@ -123,7 +115,7 @@ namespace TokenCalc
                 TokenValidationParameters = tokenparams,
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                Audience = "ExampleAudience",
+                Audience = myAudience,                 
                 
                 Events = new JwtBearerEvents
                 {
@@ -139,7 +131,6 @@ namespace TokenCalc
                         {
                             return Task.FromResult(0);                            
                         }
-                        //not identified kind of magic goes here
                         var claimsIdentity = context.Ticket.Principal.Identity as ClaimsIdentity;
                         claimsIdentity.AddClaim(new Claim("id_token",
                             context.Request.Headers["Authorization"][0].Substring(context.Ticket.AuthenticationScheme.Length + 1)));
@@ -150,9 +141,7 @@ namespace TokenCalc
                     }
                 }
             };
-
-            //Adding a jwt service so we can use it like 
-            //[Authorize(ActiveAuthenticationSchemes = "Bearer")]
+            
             app.UseJwtBearerAuthentication(opts);
 
             app.UseCors("MyPolicy");
