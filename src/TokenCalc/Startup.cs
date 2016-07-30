@@ -15,6 +15,7 @@ using TokenCalc.Data;
 using Microsoft.EntityFrameworkCore;
 using TokenCalc.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using TokenCalc.Services;
 
 namespace TokenCalc
 {
@@ -59,6 +60,18 @@ namespace TokenCalc
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            //Setting service for storing our TokenProviderOptions
+            services.AddSingleton<ITokenProviderOptionsService>(new TokenProviderOptionsService(options =>
+            {
+                options.Audience = myAudience;
+                options.Issuer = myIssuer;
+                options.SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
+                    SecurityAlgorithms.HmacSha256);
+                options.Expiration = expirationTime;
+            }));
+
+
             var policy = new CorsPolicy();
             policy.Headers.Add("*");
             policy.Methods.Add("*");
@@ -81,25 +94,12 @@ namespace TokenCalc
 
             app.UseStaticFiles();
             app.UseIdentity();
-
             
-            //Setting up our "token dispenser"
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
-            var options = new TokenProviderOptions
-            {
-                Audience = myAudience,
-                Issuer = myIssuer,
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256),
-                Expiration = expirationTime,
-                Path = "/api/token"
-            };
-            
-            app.UseMiddleware<TokenProviderMiddleware>(Options.Create(options));
 
             //Setting our tokens validator
             var tokenparams = new TokenValidationParameters()
             {
-                IssuerSigningKey = signingKey,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
                 ValidIssuer = myIssuer,
                 ValidateLifetime = true,
                 SaveSigninToken = false,
