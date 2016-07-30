@@ -35,18 +35,22 @@ GET /api/calculator/mult/3/5
 (TEST - тестовый юзер, у него нет айдентити)
 =====================================
 POST http://localhost:5000/token HTTP/1.1
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
 Host: localhost:5000
-Content-Length: 30
+Content-Length: 51
 
-username=TEST&password=TEST123
+{
+  UserName:"user@mail.ru",
+  Password:"Qwerty1]"
+}
 =====================================
 
 Ответ получаем в виде:
 ++++++++++++++++++++++++++++++++++++++
 {
   "access_token": "eyJhbGciOiJI.......",
-  "expires_in": 1800
+  "expires_in": 1800,
+  "valid_to":"30.07.2016 22:53:07"
 }
 ++++++++++++++++++++++++++++++++++++++
 
