@@ -1,38 +1,41 @@
-1) Какое у нас апи:
+1) Our API:
 
-**Middleware**
-POST /api/token
-примет логин и пароль и вернет токен
-(если логин и пароль есть в базе)
+**Token**
+[open] POST /api/token
+returns token for given username/password pair
+{
+  UserName:"user@mail.ru",
+  Password:"Qwerty1]"
+}
+**Calculator**
+[open] GET /api/calculator/add/4/8
 
-**Калькулятор**
-GET /api/calculator/add/4/8
-открытый контроллер, используют все желающие
-вернет сумму
+[closed] GET /api/calculator/mult/3/5
 
-GET /api/calculator/mult/3/5
-закрытый контроллер, работает только если передан верный токен
-возвращает произведение
-
-**Аккаунт менеджер**
+**Account Manager**
 
 [open] GET /api/account/register/user@mail.ru/Qwerty1]
-регистрирует пользователей и показывает ошибки регистрации
+register new user
 
 [closed] GET /api/account/authenticated
-залогинен ли юзер?
+is user authenticated?
 
 [open] GET /api/account/allusers/
-список пользователей
+list of all users
 
 [closed] GET /api/account/claims/
-список утверждений текущего пользователя
+current user's claims
 
 
-2) Примеры запросов для фиддлера:
-
-Шаг 1 - Посылаем запрос с логином и паролем
-(TEST - тестовый юзер, у него нет айдентити)
+2) Fiddler http requests examples:
+=====================================
+Step 0 - Register user
+=====================================
+GET http://localhost:5000/api/account/register/user@mail.ru/Qwerty1]
+Host: localhost:5000
+Content-Length: 51
+=====================================
+Step 1 - Request token for a registered user
 =====================================
 POST http://localhost:5000/token HTTP/1.1
 Content-Type: application/json
@@ -45,7 +48,7 @@ Content-Length: 51
 }
 =====================================
 
-Ответ получаем в виде:
+If succeed, we will get our token:
 ++++++++++++++++++++++++++++++++++++++
 {
   "access_token": "eyJhbGciOiJI.......",
@@ -54,7 +57,7 @@ Content-Length: 51
 }
 ++++++++++++++++++++++++++++++++++++++
 
-Шаг 2 - Можем послать запрос на умножение, подставив свой токен
+Шаг 2 - Now we can multiply numbers by accessing the closed controller
 =========================
 GET http://localhost:5000/api/calculator/mult/2/2 HTTP/1.1
 Host: localhost:5000
