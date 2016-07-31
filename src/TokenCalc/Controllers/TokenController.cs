@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TokenCalc.Models;
 using System.Security.Claims;
 using TokenCalc.Services;
+using Microsoft.Extensions.Options;
 
 namespace TokenCalc.Controllers
 {
@@ -22,11 +23,11 @@ namespace TokenCalc.Controllers
         public TokenController(
             SignInManager<ApplicationUser> signInManager,
             ApplicationRoleManager roleManager,
-            ITokenProviderOptionsService tokenOptionsSource,
+            IOptions<TokenProviderOptions> tokenOptionsSource,
             UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
-            _tokenOptions = tokenOptionsSource.GetOptions().Value;
+            _tokenOptions = tokenOptionsSource.Value;
             _signInManager = signInManager;
         }
 

@@ -61,7 +61,8 @@ namespace TokenCalc
                 .AddDefaultTokenProviders();
 
             //Setting service for storing our TokenProviderOptions
-            services.AddSingleton<ITokenProviderOptionsService>(new TokenProviderOptionsService(options =>
+
+            services.Configure<TokenProviderOptions>(options =>
             {
                 options.Audience = myAudience;
                 options.Issuer = myIssuer;
@@ -69,7 +70,7 @@ namespace TokenCalc
                     new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
                     SecurityAlgorithms.HmacSha256);
                 options.Expiration = expirationTime;
-            }));
+            });
 
 
             var policy = new CorsPolicy();
