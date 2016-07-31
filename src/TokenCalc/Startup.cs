@@ -20,15 +20,7 @@ using TokenCalc.Services;
 namespace TokenCalc
 {
     public class Startup
-    {
-
-        //Our secred key which MUST be stored separately
-        private static readonly string secretKey = "veryverysecretkey";
-
-        private static readonly string myIssuer = "ExampleIssuer";
-        private static readonly string myAudience = "ExampleAudience";
-        private static readonly TimeSpan expirationTime = TimeSpan.FromSeconds(60);
-
+    {  
 
 
         public Startup(IHostingEnvironment env)
@@ -64,12 +56,12 @@ namespace TokenCalc
 
             services.Configure<TokenProviderOptions>(options =>
             {
-                options.Audience = myAudience;
-                options.Issuer = myIssuer;
+                options.Audience = Configuration["Tokens:Audience"];
+                options.Issuer = Configuration["Tokens:Issuer"];
                 options.SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["TokenSigningKey"])),
                     SecurityAlgorithms.HmacSha256);
-                options.Expiration = expirationTime;
+                options.Expiration = TimeSpan.FromSeconds(int.Parse(Configuration["Tokens:Expiration"]));
             });
 
 
@@ -100,8 +92,8 @@ namespace TokenCalc
             //Setting our tokens validator
             var tokenparams = new TokenValidationParameters()
             {
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
-                ValidIssuer = myIssuer,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["TokenSigningKey"])),
+                ValidIssuer = Configuration["Tokens:Issuer"],
                 ValidateLifetime = true,
                 SaveSigninToken = false,
                 RequireExpirationTime = true,
@@ -119,7 +111,7 @@ namespace TokenCalc
                 TokenValidationParameters = tokenparams,
                 AutomaticAuthenticate = true,
                 AutomaticChallenge = true,
-                Audience = myAudience,                 
+                Audience = Configuration["Tokens:Audience"],                 
                 
                 Events = new JwtBearerEvents
                 {
